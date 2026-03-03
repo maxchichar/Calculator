@@ -6,70 +6,134 @@
         <title>Maxchicha Calculator</title>
     </head>
     <style>
-        /* Basic CSS layout */
-        .calculator {
-            width: 220px;
-            margin: 50px auto;
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 10px;
-            background-color: lavender;
+        /* Glassmorphism CSS layout */
+        body {
+            margin: 0;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-family: Arial, sans-serif;
+            background-color: e6e6fa;
+            background-image: linear-gradient(135deg,#7028E4 0%, #E6E6FA 100%);
         }
-        .display {
-            grid-column: span 4;
-            height: 50px;
-            font-size: 24px;
+        .calculator {
+            width: 300px;
+            padding: 20px;
+            border-radius: 20px;
+            background: rgba(230, 230, 250, 0.15);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.25);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid rgba(230, 230, 250, 0.2);
+        }
+        #display {
+            width: 100%;
+            height: 60px;
+            font-size: 2rem;
             text-align: right;
             padding: 10px;
-            border: 1px solid purple;
+            border: none;
+            color: white;
+            border-radius: 10px;
+            background: rgba(230, 230, 250, 0.2);
+            margin-bottom: 15px;
+            outline: none;
         }
+
+        .buttons {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 12px;
+        }
+
         button {
-            height: 50px;
-            font-size: 21px;
-            color: purple;
+            font-size: 1.2rem;
+            color: white;
+            padding: 18px;
+            border-radius: 12px;
+            border: none;
+            background: rgba(230, 230, 250, 0.12);
+            backdrop-filter: blur(5px);
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        button:hover {
+            background: rgba(230, 230, 250, 0.25);
+        }
+
+        button:active {
+            transform: scale(0.95);
+        }
+
+        .equal:hover {
+            background: rgba(0, 180, 250, 0.7);
         }
     </style>
     <body>
       <div class="calculator">
-        <input type="text" class="display" id="display" disabled>
+        <input id="display" disabled>
 
-        <button>7</button>
-        <button>8</button>
-        <button>9</button>
-        <button>/</button>
+        <div class="buttons">
+            <button data-key="7">7</button>
+            <button data-key="8">8</button>
+            <button data-key="9">9</button>
+            <button data-key="/">/</button>
 
-        <button>4</button>
-        <button>5</button>
-        <button>6</button>
-        <button>*</button>
+            <button data-key="4">4</button>
+            <button data-key="5">5</button>
+            <button data-key="6">6</button>
+            <button data-key="*">*</button>
 
-        <button>1</button>
-        <button>2</button>
-        <button>3</button>
-        <button>-</button>
+            <button data-key="1">1</button>
+            <button data-key="2">2</button>
+            <button data-key="3">3</button>
+            <button data-key="-">-</button>
 
-        <button>0</button>
-        <button>.</button>
-        <button>C</button>
-        <button>+</button>
-        <button>=</button>
+            <button data-key="0">0</button>
+            <button data-key=".">.</button>
+            <button data-key="+">+</button>
+            <button>C</button>
+            <button>=</button>
+        </div>
       </div>
 
       <script>
         const display = document.getElementById("display");
 
+        // Track the full expression typed by user
+        let expression = "";
+
+        //Handles all button clicks
         document.querySelectorAll("button").forEach(button => {
             button.addEventListener("click", () => {
                 const value = button.textContent;
 
                 if (value === "C") {
+                    expression = "";
                     display.value = "";
                 }
                 else if (value === "=") {
-                    display.value = eval(display.value);
+                    // send's expression to Go backend
+                    fetch("/api/calc", {
+                        method: "POST",
+                        headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify({ expr: expression })
+                    })
+                    .then(res => res.json())
+                    .then(data => {
+                        display.value = data.result;
+                        expression = data.result.toString();
+                    })
+                    .catch(() => {
+                        display.value = "mperi";
+                        expression = "";
+                    });
                 }
                 else {
-                    display.value += value;
+                    expression += value
+                    display.value = expression;
                 }
             })
         })
