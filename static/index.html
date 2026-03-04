@@ -5,38 +5,72 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>Maxchicha Calculator</title>
     </head>
+
     <style>
+        /* This enables me to create a variable making it easy to switch between light mode and dark mode */
+        :root {
+            --bg-color: linear-gradient(135deg, #7028E4 0%, #E6E6FA 100%);
+            --glass-bg: rgba(230, 230, 250, 0.15);
+            --glass-button: rgba(230, 230, 250, 0.12);
+            --glass-hover: rgba(230, 230, 250, 0.25);
+            --text-color: white;
+        }
+        
+        /* Dark mode theme colors */
+        body.dark {
+            --bg-color: linear-gradient(135deg, #2a0040, #5a0087 50%, #8b00c9);
+            --glass-bg: rgba(20, 20, 20, 0.45);
+            --glass-button: rgba(40, 40, 40, 0.4);
+            --glass-hover: rgba(80, 80, 80, 0.6);
+            --text-color: #f2e6ff;
+        }
+
         /* Glassmorphism CSS layout */
-        body {
+        html, body {
+            width: 100%;
+            padding: 0;
             margin: 0;
             height: 100vh;
             display: flex;
-            justify-content: center;
-            align-items: center;
+            flex-direction: column;
+
+            
             font-family: Arial, sans-serif;
-            background-color: e6e6fa;
-            background-image: linear-gradient(135deg,#7028E4 0%, #E6E6FA 100%);
+            background-image: var(--bg-color);
         }
+
+        /* This controls the page layout and enables footer to be at the bottom */
+        .page {
+            flex: 1;
+            display: flex;
+            justify-content: center; /* horizonatal center */
+            align-items: center; /* vertical center only for the calculator area */
+            width: 100%;
+        }
+
+        /* This contains the calculator UI */
         .calculator {
             width: 300px;
             padding: 20px;
             border-radius: 20px;
-            background: rgba(230, 230, 250, 0.15);
+            background: var(--glass-bg);
+            color: var(--text-color);
             box-shadow: 0 8px 32px rgba(0, 0, 0, 0.25);
             backdrop-filter: blur(10px);
             -webkit-backdrop-filter: blur(10px);
             border: 1px solid rgba(230, 230, 250, 0.2);
         }
+
         #display {
             width: 100%;
             height: 60px;
             font-size: 2rem;
             text-align: right;
-            padding: 10px;
+            padding: 1.3px;
             border: none;
-            color: white;
+            color: var(--text-color);
             border-radius: 10px;
-            background: rgba(230, 230, 250, 0.2);
+            background: var(--glass-bg);
             margin-bottom: 15px;
             outline: none;
         }
@@ -49,18 +83,18 @@
 
         button {
             font-size: 1.2rem;
-            color: white;
+            color: var(--text-color);
             padding: 18px;
             border-radius: 12px;
             border: none;
-            background: rgba(230, 230, 250, 0.12);
+            background: var(--glass-button);
             backdrop-filter: blur(5px);
             cursor: pointer;
             transition: 0.2s;
         }
 
         button:hover {
-            background: rgba(230, 230, 250, 0.25);
+            background: var(--glass-hover);
         }
 
         button:active {
@@ -70,51 +104,121 @@
         .equal:hover {
             background: rgba(0, 180, 250, 0.7);
         }
+
+        .theme-toggle {
+            padding: absolute;
+            top: 20px;
+            right: 20px;
+
+            padding: 10px 20px;
+            font-size: 14px;
+            border-radius: 20px;
+            border: none;
+
+            background: var(--glass-button);
+            color: var(--text-color);
+            backdrop-filter: blur(5px);
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        .theme-toggle:hover {
+            background: var(--glass-hover);
+        }
+
+        .footer {
+        margin-top: 30px;
+        text-align: center;
+        padding: 15px 0;
+        font-size: 14px;
+        color: var(--text-color);
+        
+        width: 100vw;
+        margin: 0;
+
+        background: var(--glass-bg);
+        border-radius: 0;
+        border-top: 1px solid rgba(230, 230, 230, 0.25);
+        backdrop-filter: blur(12px);
+
+        border: 1px solid rgba(230, 230, 230, 0.2);
+        box-shadow: 0 -4px 16px rgba(0,0,0,0.2);
+        }
+
+        .footer:hover {
+        background: rgba(255, 255, 255, 0.18);
+        cursor: default;
+        }
+
     </style>
     <body>
-      <div class="calculator">
-        <input id="display" disabled>
+        <button id="theme-toggle" class="theme-toggle">🌙 Dark Mode</button>
+        <div class="page">
 
-        <div class="buttons">
-            <button data-key="7">7</button>
-            <button data-key="8">8</button>
-            <button data-key="9">9</button>
-            <button data-key="/">/</button>
-
-            <button data-key="4">4</button>
-            <button data-key="5">5</button>
-            <button data-key="6">6</button>
-            <button data-key="*">*</button>
-
-            <button data-key="1">1</button>
-            <button data-key="2">2</button>
-            <button data-key="3">3</button>
-            <button data-key="-">-</button>
-
-            <button data-key="0">0</button>
-            <button data-key=".">.</button>
-            <button data-key="+">+</button>
-            <button>C</button>
-            <button>=</button>
+            <div class="calculator">
+              <input id="display" disabled>
+      
+              <div class="buttons">
+                  <button data-key="7">7</button>
+                  <button data-key="8">8</button>
+                  <button data-key="9">9</button>
+                  <button data-key="/">/</button>
+      
+                  <button data-key="4">4</button>
+                  <button data-key="5">5</button>
+                  <button data-key="6">6</button>
+                  <button data-key="*">*</button>
+      
+                  <button data-key="1">1</button>
+                  <button data-key="2">2</button>
+                  <button data-key="3">3</button>
+                  <button data-key="-">-</button>
+      
+                  <button data-key="0">0</button>
+                  <button data-key=".">.</button>
+                  <button data-action="clear">C</button>
+                  <button data-key="+">+</button>
+                  <button data-action="equals">=</button>
+              </div>
+            </div>
         </div>
-      </div>
+        <footer class="footer">
+          <p>
+              Made by Chibueze Charles Maxwell
+          </p>
+        </footer>
 
       <script>
+        const toggle = document.getElementById("theme-toggle");
+
+        toggle.addEventListener("click", () => {
+            document.body.classList.toggle("dark");
+
+            if (document.body.classList.contains("dark")) {
+                toggle.textContent = "☀️ Light Mode";
+            } else {
+                toggle.textContent = "🌙 Dark Mode";
+            }
+        });
+
         const display = document.getElementById("display");
 
         // Track the full expression typed by user
         let expression = "";
 
         //Handles all button clicks
-        document.querySelectorAll("button").forEach(button => {
-            button.addEventListener("click", () => {
-                const value = button.textContent;
+        document.querySelectorAll("button").forEach(btn => {
+            btn.addEventListener("click", () => {
+                const key = btn.dataset.key;
+                const action = btn.dataset.action;
 
-                if (value === "C") {
+                if (action === "clear") {
                     expression = "";
                     display.value = "";
+                    return
                 }
-                else if (value === "=") {
+                
+                if (action === "equals") {
                     // send's expression to Go backend
                     fetch("/api/calc", {
                         method: "POST",
@@ -130,13 +234,14 @@
                         display.value = "mperi";
                         expression = "";
                     });
+                    return;
                 }
-                else {
-                    expression += value
+                if (key) {
+                    expression += key;
                     display.value = expression;
                 }
-            })
-        })
+            });
+        });
       </script>
     </body>
 </html>
